@@ -58,3 +58,30 @@ exports.Login = (req, res) => {
     })
   })
 }
+
+exports.Read = async (req, res) => {
+  const id = req.params.userId
+  const token = req.headers.authorization.split(' ')[1]
+  try {
+    const decoded = await jwt.verify(token, process.env.SECRET)
+    if (decoded._id !== id) {
+      res.send({
+        message: 'invalid id'
+      })
+    }
+    const foundUser = await User.findById(id, {
+      salt: 0,
+      password: 0
+    })
+
+    res.send({
+      message: 'read data',
+      data: foundUser
+    })
+  } catch (error) {
+    //invalid token
+    res.send({
+      message: error.message
+    })
+  }
+}

@@ -62,6 +62,14 @@ exports.Login = (req, res) => {
 exports.Read = async (req, res) => {
   const id = req.params.userId
   const token = req.headers.authorization.split(' ')[1]
+  //   console.log(req.cookies.token, token, 'AAA')
+
+  if (!req.cookies.token && token) {
+    // console.log(req.cookie, token, 'aa')
+    res.send({
+      message: 'please login'
+    })
+  }
   try {
     const decoded = await jwt.verify(token, process.env.SECRET)
     if (decoded._id !== id) {
@@ -84,4 +92,11 @@ exports.Read = async (req, res) => {
       message: error.message
     })
   }
+}
+
+exports.Logout = (req, res) => {
+  res.clearCookie('token') // clear token in cookie
+  res.send({
+    message: 'sign out success'
+  })
 }

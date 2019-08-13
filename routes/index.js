@@ -1,11 +1,8 @@
 var express = require('express')
 var router = express.Router()
+const { Register } = require('../controllers/users')
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.send({
-    message: 'hello word'
-  })
-})
+router.post('/register', Register)
 
 module.exports = router

@@ -2,6 +2,42 @@ const User = require('../models/UserModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+exports.userById = (req, res, next, id) => {
+  // let id = req.params.userId
+  User.findById(id).exec((err, user) => {
+    // cari data berdasarkan id
+    if (err || !user) {
+      // jika error or user not found, send in here
+      return res.status(404).json({
+        error: 'user Not found'
+      })
+    }
+
+    req.profile = user // user sent to req.profile
+    next() // function params callback
+  })
+}
+
+exports.RegisterAdmin = async (req, res) => {
+  const gentSalt = await bcrypt.genSalt(6)
+  const hashedPassword = await bcrypt.hash(process.env.PW, gentSalt)
+  const newAdmin = {
+    userName: process.env.UN,
+    email: process.env.E,
+    salt: gentSalt,
+    password: hashedPassword,
+    role: process.env.R
+  }
+  const admin = await new User(newAdmin).save()
+
+  //   console.log(admin)
+  const { salt, password, ...dataAdmin } = admin._doc
+
+  return res.status(201).send({
+    message: 'Successfully created admin',
+    data: dataAdmin
+  })
+}
 exports.Register = async (req, res) => {
   const gentSalt = await bcrypt.genSalt(6)
   const hashedPassword = await bcrypt.hash(req.body.password, gentSalt)
@@ -13,7 +49,7 @@ exports.Register = async (req, res) => {
   try {
     const user = await new User(newUser).save()
 
-    console.log(user)
+    // console.log(user)
     const { salt, password, ...dataUser } = user._doc
 
     res.status(200).send({
@@ -49,7 +85,7 @@ exports.Login = (req, res) => {
     res.cookie('token', token, { expire: new Date() + 9999 }) //set cookie
 
     const { password, salt, ...data } = user._doc
-    console.log(req.cookie)
+    console.log(token)
 
     res.send({
       message: 'login success',
@@ -62,9 +98,8 @@ exports.Login = (req, res) => {
 exports.Read = async (req, res) => {
   const id = req.params.userId
   const token = req.headers.authorization.split(' ')[1]
-  //   console.log(req.cookies.token, token, 'AAA')
 
-  if (!req.cookies.token && token) {
+  if (!req.cookies.token) {
     // console.log(req.cookie, token, 'aa')
     res.send({
       message: 'please login'
@@ -72,6 +107,7 @@ exports.Read = async (req, res) => {
   }
   try {
     const decoded = await jwt.verify(token, process.env.SECRET)
+
     if (decoded._id !== id) {
       res.send({
         message: 'invalid id'

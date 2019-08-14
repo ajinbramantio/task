@@ -54,10 +54,10 @@ exports.Register = async (req, res) => {
 
     res.status(200).send({
       message: 'user',
-      data: dataUser
+      dataUser
     })
   } catch (error) {
-    res.send({
+    res.status(400).send({
       message: 'data is ready exists'
     })
   }

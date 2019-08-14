@@ -80,7 +80,10 @@ exports.Login = (req, res) => {
         message: 'password wrong'
       })
     }
-    const token = jwt.sign({ _id: user._id }, process.env.SECRET) // create token
+    const token = jwt.sign(
+      { _id: user._id, role: user.role },
+      process.env.SECRET
+    ) // create token
 
     res.cookie('token', token, { expire: new Date() + 9999 }) //set cookie
 

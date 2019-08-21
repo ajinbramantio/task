@@ -34,9 +34,35 @@ exports.Get_Task = async (req, res) => {
 }
 
 exports.Update_task = async (req, res) => {
-  res.send({
-    message: 'update success'
-  })
+  const userId = req.auth._id
+  const taskId = req.params.taskId
+
+  const foundTask = await Task.findById({ _id: taskId })
+  console.log(foundTask)
+
+  // console.log(typeof foundTask._id, typeof taskId)
+  if (foundTask === null) {
+    return res.send({
+      message: 'update fail, data not there'
+    })
+  } else if (String(foundTask._id) === taskId) {
+    const UpdateData = {
+      ...req.body
+    }
+    const resultUpdate = await Task.findOneAndUpdate(
+      { $and: [{ _id: taskId }, { creator: userId }] },
+      { $set: UpdateData },
+      {
+        new: true
+      }
+    )
+    // console.log(resultUpdate)
+
+    res.send({
+      message: 'update success',
+      data: resultUpdate
+    })
+  }
 }
 exports.Delete_task = async (req, res) => {
   const userId = req.auth._id

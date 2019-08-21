@@ -15,8 +15,21 @@ exports.CreateTask = async (req, res) => {
 }
 
 exports.Get_Task = async (req, res) => {
+  const userId = req.auth._id
+  const foundTask = await Task.find({ creator: userId })
+  const foundTaskAll = await Task.find().populate('creator', 'name role')
+  // console.log(rfoundTaskAll)
+
+  if (req.auth.role == process.env.R) {
+    return res.send({
+      message: 'get success',
+      data: foundTaskAll
+    })
+  }
+
   return res.send({
-    message: 'get success'
+    message: 'get success',
+    data: foundTask
   })
 }
 

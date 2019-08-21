@@ -39,7 +39,28 @@ exports.Update_task = async (req, res) => {
   })
 }
 exports.Delete_task = async (req, res) => {
-  res.send({
-    message: 'delete success'
-  })
+  const userId = req.auth._id
+  const taskId = req.params.taskId
+
+  // console.log(req.params)
+  try {
+    const foundTask = await Task.findOneAndRemove({
+      $and: [{ _id: taskId }, { creator: userId }]
+    })
+    // console.log(foundTask)
+
+    if (foundTask === null) {
+      return res.send({
+        message: 'delete fail cause data not there'
+      })
+    }
+
+    return res.send({
+      message: 'delete success'
+    })
+  } catch (error) {
+    return res.status(404).send({
+      message: 'delete fail'
+    })
+  }
 }

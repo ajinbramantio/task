@@ -1,5 +1,3 @@
-const User = require('../models/UserModel')
-const jwt = require('jsonwebtoken')
 const expressJwt = require('express-jwt')
 
 exports.requireSignIn = expressJwt({
@@ -20,7 +18,7 @@ exports.isAuth = async (req, res, next) => {
   next()
 }
 exports.isAdmin = async (req, res, next) => {
-  if (req.profile.role !== 1) {
+  if (req.profile.role != process.env.R) {
     return res.status(403).json({
       error: 'Admin resourse! Access denied'
     })

@@ -23,8 +23,7 @@ const TaskSchema = mongoose.Schema({
   creator: {
     type: ObjectId,
     ref: 'User'
-  },
-  role: Number
+  }
 })
 
 // User model => users collection

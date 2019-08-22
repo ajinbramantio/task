@@ -1,11 +1,15 @@
 const Task = require('../models/TaskModel')
 
 exports.CreateTask = async (req, res) => {
+  // console.log('test')
+
   const userId = req.auth._id
   const newTask = {
     ...req.body,
     creator: userId
   }
+  // console.log(newTask)
+
   const result = await Task.create(newTask)
 
   res.send({

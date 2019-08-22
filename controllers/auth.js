@@ -6,8 +6,6 @@ exports.requireSignIn = expressJwt({
 })
 
 exports.isAuth = async (req, res, next) => {
-  // console.log(req)
-
   const user = req.profile._id == req.auth._id
   //   console.log(req.profile._id, req.auth._id)
 

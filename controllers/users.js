@@ -46,6 +46,13 @@ exports.Register = async (req, res) => {
     salt: gentSalt,
     password: hashedPassword
   }
+  const foundUser = await User.findOne({ userName: req.body.userName })
+  if (foundUser) {
+    return res.send({
+      message: 'user is ready exists'
+    })
+  }
+
   try {
     const user = await new User(newUser).save()
 
@@ -53,11 +60,11 @@ exports.Register = async (req, res) => {
     const { salt, password, ...dataUser } = user._doc
 
     res.status(200).send({
-      message: 'user',
+      message: 'create user success',
       dataUser
     })
   } catch (error) {
-    res.status(400).send({
+    res.send({
       message: 'data is ready exists'
     })
   }
@@ -101,13 +108,8 @@ exports.Login = (req, res) => {
 exports.Read = async (req, res) => {
   const id = req.params.userId
   const token = req.headers.authorization.split(' ')[1]
+  console.log(token)
 
-  if (!req.cookies.token) {
-    // console.log(req.cookie, token, 'aa')
-    res.send({
-      message: 'please login'
-    })
-  }
   try {
     const decoded = await jwt.verify(token, process.env.SECRET)
 
@@ -127,8 +129,8 @@ exports.Read = async (req, res) => {
     })
   } catch (error) {
     //invalid token
-    res.send({
-      message: error.message
+    res.status(404).send({
+      message: 'salah'
     })
   }
 }

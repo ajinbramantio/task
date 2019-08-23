@@ -21,23 +21,18 @@ const {
 router.get('/meAdmin', RegisterAdmin)
 router.post('/register', Register)
 router.post('/login', Login)
-router.get('/secret/:userId', requireSignIn, isAuth, isAdmin, (req, res) => {
+router.get('/secret/:userId', requireSignIn, isAdmin, (req, res) => {
   res.send({
     user: req.profile
   })
 })
-router.get('/user/:userId', requireSignIn, isAuth, Read)
+router.get('/user/:userId', requireSignIn, Read)
 router.get('/logout', Logout)
 
-router.post('/create-task/:userId', requireSignIn, isAuth, CreateTask)
-router.get('/get-task/:userId', requireSignIn, isAuth, Get_Task)
-router.put('/update-task/:taskId/:userId', requireSignIn, isAuth, Update_task)
-router.delete(
-  '/remove-task/:taskId/:userId',
-  requireSignIn,
-  isAuth,
-  Delete_task
-)
+router.post('/create-task/:userId', requireSignIn, CreateTask)
+router.get('/get-task/:userId', requireSignIn, Get_Task)
+router.put('/update-task/:taskId/:userId', requireSignIn, Update_task)
+router.delete('/remove-task/:taskId/:userId', requireSignIn, Delete_task)
 
 router.param('userId', userById)
 

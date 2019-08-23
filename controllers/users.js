@@ -95,7 +95,7 @@ exports.Login = (req, res) => {
     res.cookie('token', token, { expire: new Date() + 9999 }) //set cookie
 
     const { password, salt, ...data } = user._doc
-    console.log(token)
+    // console.log('test aja dulu')
 
     res.send({
       message: 'login success',
@@ -106,9 +106,11 @@ exports.Login = (req, res) => {
 }
 
 exports.Read = async (req, res) => {
+  // console.log(req.params.userId)
+
   const id = req.params.userId
   const token = req.headers.authorization.split(' ')[1]
-  console.log(token)
+  // console.log(token)
 
   try {
     const decoded = await jwt.verify(token, process.env.SECRET)
@@ -122,6 +124,7 @@ exports.Read = async (req, res) => {
       salt: 0,
       password: 0
     })
+    // console.log(foundUser)
 
     res.send({
       message: 'read data',

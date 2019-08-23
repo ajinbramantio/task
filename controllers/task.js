@@ -19,10 +19,15 @@ exports.CreateTask = async (req, res) => {
 }
 
 exports.Get_Task = async (req, res) => {
+  // console.log('test')
+
   const userId = req.auth._id
-  const foundTask = await Task.find({ creator: userId })
-  const foundTaskAll = await Task.find().populate('creator', 'name role')
-  // console.log(rfoundTaskAll)
+  const foundTask = await Task.find({ creator: userId }).populate(
+    'creator',
+    'userName role'
+  )
+  const foundTaskAll = await Task.find().populate('creator', 'userName role')
+  // console.log(foundTaskAll)
 
   if (req.auth.role == process.env.R) {
     return res.send({
@@ -42,7 +47,7 @@ exports.Update_task = async (req, res) => {
   const taskId = req.params.taskId
 
   const foundTask = await Task.findById({ _id: taskId })
-  console.log(foundTask)
+  // console.log('siapa')
 
   // console.log(typeof foundTask._id, typeof taskId)
   if (foundTask === null) {
@@ -69,16 +74,26 @@ exports.Update_task = async (req, res) => {
   }
 }
 exports.Delete_task = async (req, res) => {
-  const userId = req.auth._id
+  const creatorId = req.params.userId
   const taskId = req.params.taskId
 
-  // console.log(req.params)
+  // console.log(req.auth)
   try {
     const foundTask = await Task.findOneAndRemove({
-      $and: [{ _id: taskId }, { creator: userId }]
+      $and: [{ _id: taskId }, { creator: creatorId }]
     })
-    // console.log(foundTask)
-
+    const getTask = await Task.find({ creator: creatorId }).populate(
+      'creator',
+      'userName role'
+    )
+    if (req.auth.role == process.env.R) {
+      console.log(req.auth)
+      const getAllTask = await Task.find().populate('creator', 'userName role')
+      return res.send({
+        message: 'delete success',
+        data: getAllTask
+      })
+    }
     if (foundTask === null) {
       return res.send({
         message: 'delete fail cause data not there'
@@ -86,7 +101,8 @@ exports.Delete_task = async (req, res) => {
     }
 
     return res.send({
-      message: 'delete success'
+      message: 'delete success',
+      data: getTask
     })
   } catch (error) {
     return res.status(404).send({

@@ -6,15 +6,16 @@ exports.requireSignIn = expressJwt({
 })
 
 exports.isAuth = async (req, res, next) => {
-  const user = req.profile._id == req.auth._id
-  //   console.log(req.profile._id, req.auth._id)
+  const user = String(req.profile._id) === req.auth._id
+  // console.log(String(req.profile._id) === req.auth._id)
 
-  if (!user) {
-    return res.status(403).json({
-      error: 'Access denied'
-    })
-  }
+  // if (!user) {
+  //   res.status(403).json({
+  //     error: 'Access denied'
+  //   })
+  // }
 
+  // console.log('ayasas')
   next()
 }
 exports.isAdmin = async (req, res, next) => {

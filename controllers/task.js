@@ -42,12 +42,31 @@ exports.Get_Task = async (req, res) => {
   })
 }
 
-exports.Update_task = async (req, res) => {
-  const userId = req.auth._id
+exports.Edit_Task = async (req, res) => {
+  const taskId = req.params.taskId
+  if (taskId) {
+    const foundTask = await Task.findById({ _id: taskId }).populate(
+      'creator',
+      'userName role'
+    )
+    return res.send({
+      message: 'Edit',
+      data: foundTask
+    })
+  }
+  // console.log(foundTask)
+  res.send({
+    message: 'Edit fail'
+  })
+}
+
+exports.Update_Task = async (req, res) => {
+  // const userId = req.auth._id
+  const creatorId = req.params.userId
   const taskId = req.params.taskId
 
   const foundTask = await Task.findById({ _id: taskId })
-  // console.log('siapa')
+  // console.log(req.auth._id, req.params.userId)
 
   // console.log(typeof foundTask._id, typeof taskId)
   if (foundTask === null) {
@@ -59,7 +78,7 @@ exports.Update_task = async (req, res) => {
       ...req.body
     }
     const resultUpdate = await Task.findOneAndUpdate(
-      { $and: [{ _id: taskId }, { creator: userId }] },
+      { $and: [{ _id: taskId }, { creator: creatorId }] },
       { $set: UpdateData },
       {
         new: true
@@ -73,7 +92,7 @@ exports.Update_task = async (req, res) => {
     })
   }
 }
-exports.Delete_task = async (req, res) => {
+exports.Delete_Task = async (req, res) => {
   const creatorId = req.params.userId
   const taskId = req.params.taskId
 

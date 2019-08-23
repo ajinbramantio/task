@@ -13,8 +13,9 @@ const {
 const {
   CreateTask,
   Get_Task,
-  Update_task,
-  Delete_task
+  Update_Task,
+  Delete_Task,
+  Edit_Task
 } = require('../controllers/task')
 
 /* GET home page. */
@@ -31,8 +32,9 @@ router.get('/logout', Logout)
 
 router.post('/create-task/:userId', requireSignIn, CreateTask)
 router.get('/get-task/:userId', requireSignIn, Get_Task)
-router.put('/update-task/:taskId/:userId', requireSignIn, Update_task)
-router.delete('/remove-task/:taskId/:userId', requireSignIn, Delete_task)
+router.get('/edit-task/:taskId/:userId', requireSignIn, Edit_Task)
+router.put('/update-task/:taskId/:userId', requireSignIn, Update_Task)
+router.delete('/remove-task/:taskId/:userId', requireSignIn, Delete_Task)
 
 router.param('userId', userById)
 

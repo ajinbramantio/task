@@ -28,15 +28,20 @@ exports.RegisterAdmin = async (req, res) => {
     password: hashedPassword,
     role: process.env.R
   }
-  const admin = await new User(newAdmin).save()
+  try {
+    const admin = await new User(newAdmin).save()
+    console.log(admin)
+    const { salt, password, ...dataAdmin } = admin._doc
 
-  //   console.log(admin)
-  const { salt, password, ...dataAdmin } = admin._doc
-
-  return res.status(201).send({
-    message: 'Successfully created admin',
-    data: dataAdmin
-  })
+    return res.status(201).send({
+      message: 'Successfully created admin',
+      data: dataAdmin
+    })
+  } catch (error) {
+    res.send({
+      message: 'data is ready exists'
+    })
+  }
 }
 exports.Register = async (req, res) => {
   const gentSalt = await bcrypt.genSalt(6)

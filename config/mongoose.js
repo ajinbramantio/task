@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const MONGODB_CONNECTION =
-  process.env.DATABASE || `mongodb://localhost:27017/database_name`
+  process.env.MONGODB_URI || `mongodb://localhost:27017/database_name`
 
 mongoose.set('useCreateIndex', true)
 mongoose

@@ -19,6 +19,11 @@ const {
 } = require('../controllers/task')
 
 /* GET home page. */
+router.get('/', (req, res) => {
+  res.send({
+    message: 'welcome'
+  })
+})
 router.get('/meAdmin', RegisterAdmin)
 router.post('/register', Register)
 router.post('/login', Login)

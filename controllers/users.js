@@ -38,7 +38,7 @@ exports.RegisterAdmin = async (req, res) => {
       data: dataAdmin
     })
   } catch (error) {
-    res.send({
+    return res.send({
       message: 'data is ready exists'
     })
   }
